@@ -1,0 +1,58 @@
+{
+    "name": "pip-services3-grpc-node",
+    "version": "3.0.0",
+    "author": "Conceptual Vision Consulting LLC",
+    "description": "GRPC calls for Pip.Services in Node.js",
+    "contributors": [
+        {
+            "name": "Sergey Seroukhov",
+            "email": "seroukhov@gmail.com"
+        }
+    ],
+    "main": "./obj/src/index.js",
+    "typings": "./obj/src/index.d.ts",
+    "keywords": [
+        "pip.services",
+        "microservice",
+        "communication",
+        "grpc",
+        "library"
+    ],
+    "noAnalyze": true,
+    "repository": {
+        "type": "git",
+        "url": "ssh://git@github.com:pip-services3-node/pip-services3-grpc-node.git"
+    },
+    "license": "MIT",
+    "engines": {
+        "node": ">=0.6.14"
+    },
+    "private": false,
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc --watch",
+        "test": "mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
+        "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
+        "protogen": "cd test/protos && protoc --js_out=import_style=commonjs,binary:./ --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` dummies.proto",
+        "docgen": "typedoc --out doc/api src --mode modules --excludeExternals --excludePrivate --target ES6 --ignoreCompilerErrors"
+    },
+    "dependencies": {
+        "@grpc/proto-loader": "^0.4.0",
+        "google-protobuf": "^3.7.1",
+        "grpc": "^1.19.0",
+        "pip-services3-commons-node": "^3.0.4",
+        "pip-services3-components-node": "^3.0.6",
+        "pip-services3-rpc-node": "^3.1.10"
+    },
+    "devDependencies": {
+        "@types/node": "*",
+        "@types/lodash": "^4.0.0",
+        "@types/async": "^2.0.0",
+        "@types/mocha": "*",
+        "@types/chai": "*",
+        "mocha": "^2.2.0",
+        "chai": "^3.5.0",
+        "typedoc": "^0.11.1",
+        "typedoc-plugin-external-module-name": "git+https://github.com/hobbyguy77/typedoc-plugin-external-module-name.git"
+    }
+}
