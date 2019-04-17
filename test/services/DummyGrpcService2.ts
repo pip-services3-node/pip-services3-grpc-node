@@ -10,6 +10,7 @@ import { PagingParams } from 'pip-services3-commons-node';
 import { ObjectSchema } from 'pip-services3-commons-node';
 import { TypeCode } from 'pip-services3-commons-node';
 import { FilterParamsSchema } from 'pip-services3-commons-node';
+import { PagingParamsSchema } from 'pip-services3-commons-node';
 
 import { Dummy } from '../Dummy';
 import { DummySchema } from '../DummySchema';
@@ -132,39 +133,42 @@ export class DummyGrpcService2 extends GrpcService {
 
         this.registerMethod(
             'get_dummies', 
-            new ObjectSchema(true)
-                .withOptionalProperty("skip", TypeCode.String)
-                .withOptionalProperty("take", TypeCode.String)
-                .withOptionalProperty("total", TypeCode.String)
-                .withOptionalProperty("body", new FilterParamsSchema()),
+            null,
+            // new ObjectSchema(true)
+            //     .withOptionalProperty("paging", new PagingParamsSchema())
+            //     .withOptionalProperty("filter", new FilterParamsSchema()),
             this.getPageByFilter
         );
 
         this.registerMethod(
             'get_dummy_by_id', 
-            new ObjectSchema(true)
-                .withRequiredProperty("dummy_id", TypeCode.String),
+            null,
+            // new ObjectSchema(true)
+            //     .withRequiredProperty("dummy_id", TypeCode.String),
             this.getOneById
         );
 
         this.registerMethod(
             'create_dummy', 
-            new ObjectSchema(true)
-                .withRequiredProperty("body", new DummySchema()),
+            null,
+            // new ObjectSchema(true)
+            //     .withRequiredProperty("dummy", new DummySchema()),
             this.create
         );
 
         this.registerMethod(
             'update_dummy', 
-            new ObjectSchema(true)
-                .withRequiredProperty("body", new DummySchema()),
+            null,
+            // new ObjectSchema(true)
+            //     .withRequiredProperty("dummy", new DummySchema()),
             this.update
         );
 
         this.registerMethod(
-            'delete_dummy_by_id', 
-            new ObjectSchema(true)
-                .withRequiredProperty("dummy_id", TypeCode.String),
+            'delete_dummy_by_id',
+            null, 
+            // new ObjectSchema(true)
+            //     .withRequiredProperty("dummy_id", TypeCode.String),
             this.deleteById
         );
     }

@@ -33,7 +33,9 @@
         "watch": "tsc --watch",
         "test": "mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
         "retest": "tsc && mocha -t 10000 -R spec -u tdd --recursive ./obj/test",
-        "protogen": "cd test/protos && protoc --js_out=import_style=commonjs,binary:./ --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` dummies.proto",
+        "protogen": "cd src/protos && protoc --js_out=import_style=commonjs,binary:./ --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` commandable.proto",
+        "protogen2": "cd test/protos && protoc --js_out=import_style=commonjs,binary:./ --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` dummies.proto",
+        "protogen3": "cd test/protos && protoc --plugin=protoc-gen-ts=../../node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./ --ts_out=. --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` dummies.proto",
         "docgen": "typedoc --out doc/api src --mode modules --excludeExternals --excludePrivate --target ES6 --ignoreCompilerErrors"
     },
     "dependencies": {
@@ -52,6 +54,7 @@
         "@types/chai": "*",
         "mocha": "^2.2.0",
         "chai": "^3.5.0",
+        "ts-protoc-gen": "^0.9.0",
         "typedoc": "^0.11.1",
         "typedoc-plugin-external-module-name": "git+https://github.com/hobbyguy77/typedoc-plugin-external-module-name.git"
     }

@@ -300,12 +300,12 @@ class GrpcService {
         let grpc = require('grpc');
         let service = this._service;
         // Dynamically load service
-        if (service == null) {
+        if (service == null && _.isString(this._protoPath)) {
             let protoLoader = require('@grpc/proto-loader');
             let options = this._packageOptions || {
                 keepCase: true,
-                // longs: String,
-                // enums: String,
+                longs: Number,
+                enums: Number,
                 defaults: true,
                 oneofs: true
             };
@@ -317,7 +317,10 @@ class GrpcService {
         else {
             service = this.getServiceByName(this._service, this._serviceName);
         }
-        this._endpoint.registerService(service, this._implementation);
+        // Register service if it is set
+        if (service) {
+            this._endpoint.registerService(service, this._implementation);
+        }
     }
     getServiceByName(packageObject, serviceName) {
         if (packageObject == null || serviceName == null)
@@ -349,11 +352,29 @@ class GrpcService {
                     let value = call.request;
                     if (_.isFunction(value.toObject))
                         value = value.toObject();
-                    // Todo: perform validation                    
+                    // Perform validation                    
+                    let correlationId = value.correlation_id;
+                    let err = schema.validateAndReturnException(correlationId, value, false);
+                    if (err) {
+                        callback(err, null);
+                        return;
+                    }
                 }
                 action.call(this, call, callback);
             });
         };
+    }
+    /**
+     * Registers a commandable method in this objects GRPC server (service) by the given name.,
+     *
+     * @param method        the GRPC method name.
+     * @param schema        the schema to use for parameter validation.
+     * @param action        the action to perform at the given route.
+     */
+    registerCommadableMethod(method, schema, action) {
+        this._endpoint.registerCommadableMethod(method, schema, (correlationId, data, callback) => {
+            action.call(this, correlationId, data, callback);
+        });
     }
     // /**
     //  * Registers a route with authorization in HTTP endpoint.

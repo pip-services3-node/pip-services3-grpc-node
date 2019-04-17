@@ -7,5 +7,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
  */
 var GrpcClient_1 = require("./GrpcClient");
 exports.GrpcClient = GrpcClient_1.GrpcClient;
-// export { CommandableGrpcClient } from './CommandableGrpcClient';
+var CommandableGrpcClient_1 = require("./CommandableGrpcClient");
+exports.CommandableGrpcClient = CommandableGrpcClient_1.CommandableGrpcClient;
 //# sourceMappingURL=index.js.map

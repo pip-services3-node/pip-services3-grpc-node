@@ -168,6 +168,14 @@ export declare abstract class GrpcService implements IOpenable, IConfigurable, I
      */
     protected registerMethod(name: string, schema: Schema, action: (call: any, callback: (err: any, message: any) => void) => void): void;
     /**
+     * Registers a commandable method in this objects GRPC server (service) by the given name.,
+     *
+     * @param method        the GRPC method name.
+     * @param schema        the schema to use for parameter validation.
+     * @param action        the action to perform at the given route.
+     */
+    protected registerCommadableMethod(method: string, schema: Schema, action: (correlationId: string, data: any, callback: (err: any, result: any) => void) => void): void;
+    /**
      * Registers a middleware for methods in GRPC endpoint.
      *
      * @param action        an action function that is called when middleware is invoked.

@@ -3,6 +3,8 @@ import { IConfigurable } from 'pip-services3-commons-node';
 import { IReferenceable } from 'pip-services3-commons-node';
 import { IReferences } from 'pip-services3-commons-node';
 import { ConfigParams } from 'pip-services3-commons-node';
+import { Parameters } from 'pip-services3-commons-node';
+import { Schema } from 'pip-services3-commons-node';
 import { IRegisterable } from './IRegisterable';
 /**
  * Used for creating GRPC endpoints. An endpoint is a URL, at which a given service can be accessed by a client.
@@ -58,6 +60,9 @@ export declare class GrpcEndpoint implements IOpenable, IConfigurable, IReferenc
     private _fileMaxSize;
     private _uri;
     private _registrations;
+    private _commandableMethods;
+    private _commandableSchemas;
+    private _commandableService;
     /**
      * Configures this HttpEndpoint using the given configuration parameters.
      *
@@ -130,6 +135,8 @@ export declare class GrpcEndpoint implements IOpenable, IConfigurable, IReferenc
      */
     unregister(registration: IRegisterable): void;
     private performRegistrations;
+    private registerCommandableService;
+    private invokeCommandableMethod;
     /**
      * Registers a service with related implementation
      *
@@ -137,4 +144,12 @@ export declare class GrpcEndpoint implements IOpenable, IConfigurable, IReferenc
      * @param implementation the service implementation methods.
      */
     registerService(service: any, implementation: any): void;
+    /**
+     * Registers a commandable method in this objects GRPC server (service) by the given name.,
+     *
+     * @param method        the GRPC method name.
+     * @param schema        the schema to use for parameter validation.
+     * @param action        the action to perform at the given route.
+     */
+    registerCommadableMethod(method: string, schema: Schema, action: (correlationId: string, args: Parameters, callback: (err: any, result: any) => void) => void): void;
 }

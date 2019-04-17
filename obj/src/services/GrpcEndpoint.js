@@ -6,9 +6,12 @@ const _ = require('lodash');
 /** @hidden */
 const fs = require('fs');
 const pip_services3_commons_node_1 = require("pip-services3-commons-node");
+const pip_services3_commons_node_2 = require("pip-services3-commons-node");
 const pip_services3_components_node_1 = require("pip-services3-components-node");
 const pip_services3_components_node_2 = require("pip-services3-components-node");
-const pip_services3_commons_node_2 = require("pip-services3-commons-node");
+const pip_services3_commons_node_3 = require("pip-services3-commons-node");
+const pip_services3_commons_node_4 = require("pip-services3-commons-node");
+const pip_services3_commons_node_5 = require("pip-services3-commons-node");
 const pip_services3_rpc_node_1 = require("pip-services3-rpc-node");
 /**
  * Used for creating GRPC endpoints. An endpoint is a URL, at which a given service can be accessed by a client.
@@ -245,7 +248,7 @@ class GrpcEndpoint {
                     else {
                         // Todo: Hack!!!
                         console.error(err);
-                        err = new pip_services3_commons_node_2.ConnectionException(correlationId, "CANNOT_CONNECT", "Opening GRPC service failed")
+                        err = new pip_services3_commons_node_4.ConnectionException(correlationId, "CANNOT_CONNECT", "Opening GRPC service failed")
                             .wrap(err).withDetails("url", this._uri);
                         if (callback)
                             callback(err);
@@ -254,7 +257,7 @@ class GrpcEndpoint {
             }
             catch (ex) {
                 this._server = null;
-                let err = new pip_services3_commons_node_2.ConnectionException(correlationId, "CANNOT_CONNECT", "Opening GRPC service failed")
+                let err = new pip_services3_commons_node_4.ConnectionException(correlationId, "CANNOT_CONNECT", "Opening GRPC service failed")
                     .wrap(ex).withDetails("url", this._uri);
                 if (callback)
                     callback(err);
@@ -270,6 +273,10 @@ class GrpcEndpoint {
      */
     close(correlationId, callback) {
         if (this._server != null) {
+            this._uri = null;
+            this._commandableMethods = null;
+            this._commandableSchemas = null;
+            this._commandableService = null;
             // Eat exceptions
             try {
                 this._server.tryShutdown((err) => {
@@ -277,14 +284,13 @@ class GrpcEndpoint {
                         this._logger.debug(correlationId, "Closed GRPC service at %s", this._uri);
                     else
                         this._logger.warn(correlationId, "Failed while closing GRPC service: %s", err);
+                    this._server = null;
                     if (callback)
                         callback(err);
                 });
             }
             catch (ex) {
                 this._logger.warn(correlationId, "Failed while closing GRPC service: %s", ex);
-                this._server = null;
-                this._uri = null;
                 if (callback)
                     callback(ex);
             }
@@ -319,12 +325,88 @@ class GrpcEndpoint {
         for (let registration of this._registrations) {
             registration.register();
         }
+        this.registerCommandableService();
     }
-    // private fixRoute(route: string): string {
-    //     if (route && route.length > 0 && !route.startsWith("/"))
-    //         route = "/" + route;
-    //     return route;
-    // }
+    registerCommandableService() {
+        if (this._commandableMethods == null)
+            return;
+        let grpc = require('grpc');
+        let protoLoader = require('@grpc/proto-loader');
+        let options = {
+            keepCase: true,
+            // longs: String,
+            // enums: String,
+            defaults: true,
+            oneofs: true
+        };
+        let packageDefinition = protoLoader.loadSync(__dirname + "../../../../src/protos/commandable.proto", options);
+        let packageObject = grpc.loadPackageDefinition(packageDefinition);
+        let service = packageObject.commandable.Commandable.service;
+        this.registerService(service, {
+            invoke: (call, callback) => {
+                this.invokeCommandableMethod(call, callback);
+            }
+        });
+    }
+    invokeCommandableMethod(call, callback) {
+        let method = call.request.method;
+        let action = this._commandableMethods ? this._commandableMethods[method] : null;
+        let correlationId = call.request.correlation_id;
+        // Handle method not found
+        if (action == null) {
+            let err = new pip_services3_commons_node_5.InvocationException(correlationId, "METHOD_NOT_FOUND", "Method " + method + " was not found")
+                .withDetails("method", method);
+            let response = {
+                error: pip_services3_commons_node_3.ErrorDescriptionFactory.create(err),
+                result_empty: true,
+                result_json: null
+            };
+            callback(null, response);
+            return;
+        }
+        try {
+            // Convert arguments
+            let argsEmpty = call.request.args_empty;
+            let argsJson = call.request.args_json;
+            let args = !argsEmpty && argsJson ? pip_services3_commons_node_2.Parameters.fromJson(argsJson) : new pip_services3_commons_node_2.Parameters();
+            // Todo: Validate schema
+            let schema = this._commandableSchemas[method];
+            if (schema) {
+                //...
+            }
+            // Call command action
+            action(correlationId, args, (err, result) => {
+                // Process result and generate response
+                let response;
+                if (err) {
+                    response = {
+                        error: pip_services3_commons_node_3.ErrorDescriptionFactory.create(err),
+                        result_empty: true,
+                        result_json: null
+                    };
+                }
+                else {
+                    response = {
+                        error: null,
+                        result_empty: result == null,
+                        result_json: result != null ? JSON.stringify(result) : null
+                    };
+                }
+                callback(err, response);
+            });
+        }
+        catch (ex) {
+            // Handle unexpected exception
+            let err = new pip_services3_commons_node_5.InvocationException(correlationId, "METHOD_FAILED", "Method " + method + " failed")
+                .wrap(ex).withDetails("method", method);
+            let response = {
+                error: pip_services3_commons_node_3.ErrorDescriptionFactory.create(err),
+                result_empty: true,
+                result_json: null
+            };
+            callback(null, response);
+        }
+    }
     /**
      * Registers a service with related implementation
      *
@@ -333,6 +415,19 @@ class GrpcEndpoint {
      */
     registerService(service, implementation) {
         this._server.addService(service, implementation);
+    }
+    /**
+     * Registers a commandable method in this objects GRPC server (service) by the given name.,
+     *
+     * @param method        the GRPC method name.
+     * @param schema        the schema to use for parameter validation.
+     * @param action        the action to perform at the given route.
+     */
+    registerCommadableMethod(method, schema, action) {
+        this._commandableMethods = this._commandableMethods || {};
+        this._commandableMethods[method] = action;
+        this._commandableSchemas = this._commandableSchemas || {};
+        this._commandableSchemas[method] = schema;
     }
 }
 GrpcEndpoint._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples("connection.protocol", "http", "connection.host", "0.0.0.0", "connection.port", 3000, "credential.ssl_key_file", null, "credential.ssl_crt_file", null, "credential.ssl_ca_file", null, "options.maintenance_enabled", false, "options.request_max_size", 1024 * 1024, "options.file_max_size", 200 * 1024 * 1024, "options.connect_timeout", 60000, "options.debug", true);

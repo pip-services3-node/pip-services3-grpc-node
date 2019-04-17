@@ -1,4 +1,4 @@
-import { IReferences } from 'pip-services3-commons-node';
+import { IReferences, PagingParamsSchema } from 'pip-services3-commons-node';
 import { Descriptor } from 'pip-services3-commons-node';
 import { FilterParams } from 'pip-services3-commons-node';
 import { PagingParams } from 'pip-services3-commons-node';
@@ -88,10 +88,8 @@ export class DummyGrpcService extends GrpcService {
         this.registerMethod(
             'get_dummies', 
             new ObjectSchema(true)
-                .withOptionalProperty("skip", TypeCode.String)
-                .withOptionalProperty("take", TypeCode.String)
-                .withOptionalProperty("total", TypeCode.String)
-                .withOptionalProperty("body", new FilterParamsSchema()),
+                .withOptionalProperty("paging", new PagingParamsSchema())
+                .withOptionalProperty("filter", new FilterParamsSchema()),
             this.getPageByFilter
         );
 
@@ -105,14 +103,14 @@ export class DummyGrpcService extends GrpcService {
         this.registerMethod(
             'create_dummy', 
             new ObjectSchema(true)
-                .withRequiredProperty("body", new DummySchema()),
+                .withRequiredProperty("dummy", new DummySchema()),
             this.create
         );
 
         this.registerMethod(
             'update_dummy', 
             new ObjectSchema(true)
-                .withRequiredProperty("body", new DummySchema()),
+                .withRequiredProperty("dummy", new DummySchema()),
             this.update
         );
 

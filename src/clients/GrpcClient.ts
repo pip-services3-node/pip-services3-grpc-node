@@ -245,8 +245,8 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
         
                     let options = this._packageOptions || {
                         keepCase: true,
-                        // longs: String,
-                        // enums: String,
+                        longs: Number,
+                        enums:  Number,
                         defaults: true,
                         oneofs: true
                     };

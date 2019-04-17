@@ -353,13 +353,13 @@ export abstract class GrpcService implements IOpenable, IConfigurable, IReferenc
         let service = this._service;
 
         // Dynamically load service
-        if (service == null) {
+        if (service == null && _.isString(this._protoPath)) {
             let protoLoader = require('@grpc/proto-loader');
 
             let options = this._packageOptions || {
                 keepCase: true,
-                // longs: String,
-                // enums: String,
+                longs: Number,
+                enums: Number,
                 defaults: true,
                 oneofs: true
             };
@@ -373,7 +373,10 @@ export abstract class GrpcService implements IOpenable, IConfigurable, IReferenc
             service = this.getServiceByName(this._service, this._serviceName);
         }
 
-        this._endpoint.registerService(service, this._implementation);
+        // Register service if it is set
+        if (service) {
+            this._endpoint.registerService(service, this._implementation);
+        }
     }
 
     private getServiceByName(packageObject: any, serviceName: string): any {
@@ -410,13 +413,34 @@ export abstract class GrpcService implements IOpenable, IConfigurable, IReferenc
                     if (_.isFunction(value.toObject))
                         value = value.toObject();
 
-                    // Todo: perform validation                    
+                    // Perform validation                    
+                    let correlationId = value.correlation_id;
+                    let err = schema.validateAndReturnException(correlationId, value, false);
+                    if (err) {
+                        callback(err, null);
+                        return;
+                    }
                 }
 
                 action.call(this, call, callback);
             });
         };
     }    
+
+    /**
+     * Registers a commandable method in this objects GRPC server (service) by the given name.,
+     * 
+     * @param method        the GRPC method name.
+     * @param schema        the schema to use for parameter validation.
+     * @param action        the action to perform at the given route.
+     */
+    protected registerCommadableMethod(method: string, schema: Schema,
+        action: (correlationId: string, data: any, callback: (err: any, result: any) => void) => void): void {
+
+        this._endpoint.registerCommadableMethod(method, schema, (correlationId, data, callback) => {
+            action.call(this, correlationId, data, callback);
+        });
+    }
 
     // /**
     //  * Registers a route with authorization in HTTP endpoint.

@@ -9,13 +9,18 @@ import { IConfigurable } from 'pip-services3-commons-node';
 import { IReferenceable } from 'pip-services3-commons-node';
 import { IReferences } from 'pip-services3-commons-node';
 import { ConfigParams } from 'pip-services3-commons-node';
+import { Parameters } from 'pip-services3-commons-node';
 import { CompositeLogger } from 'pip-services3-components-node';
 import { CompositeCounters } from 'pip-services3-components-node';
+import { ErrorDescriptionFactory } from 'pip-services3-commons-node';
 import { ConnectionException } from 'pip-services3-commons-node';
+import { InvocationException } from 'pip-services3-commons-node';
+import { JsonConverter } from 'pip-services3-commons-node';
 import { HttpConnectionResolver } from 'pip-services3-rpc-node';
 import { Schema } from 'pip-services3-commons-node';
 
 import { IRegisterable } from './IRegisterable';
+import { ErrorDescription } from '../../test/protos/dummies_pb';
 
 /**
  * Used for creating GRPC endpoints. An endpoint is a URL, at which a given service can be accessed by a client. 
@@ -87,6 +92,9 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
     private _fileMaxSize: number = 200 * 1024 * 1024;
     private _uri: string;
     private _registrations: IRegisterable[] = [];
+    private _commandableMethods: any;
+    private _commandableSchemas: any;
+    private _commandableService: any;
     
     /**
      * Configures this HttpEndpoint using the given configuration parameters.
@@ -246,6 +254,11 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
      */
     public close(correlationId: string, callback?: (err: any) => void): void {
         if (this._server != null) {
+            this._uri = null;
+            this._commandableMethods = null;
+            this._commandableSchemas = null;
+            this._commandableService = null;
+
             // Eat exceptions
             try {
                 this._server.tryShutdown((err) => {
@@ -254,14 +267,13 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
                     else
                         this._logger.warn(correlationId, "Failed while closing GRPC service: %s", err);
 
+                    this._server = null;
+
                     if (callback) callback(err);
                 });
             } catch (ex) {
                 this._logger.warn(correlationId, "Failed while closing GRPC service: %s", ex);
  
-                this._server = null;
-                this._uri = null;
-
                 if (callback) callback(ex);
             }
         } else {
@@ -296,13 +308,104 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
         for (let registration of this._registrations) {
             registration.register();
         }
+
+        this.registerCommandableService();
     }
 
-    // private fixRoute(route: string): string {
-    //     if (route && route.length > 0 && !route.startsWith("/"))
-    //         route = "/" + route;
-    //     return route;
-    // }
+    private registerCommandableService() {
+        if (this._commandableMethods == null)  return;
+
+        let grpc = require('grpc');
+        let protoLoader = require('@grpc/proto-loader');
+
+        let options = {
+            keepCase: true,
+            // longs: String,
+            // enums: String,
+            defaults: true,
+            oneofs: true
+        };
+
+        let packageDefinition = protoLoader.loadSync(__dirname + "../../../../src/protos/commandable.proto", options);
+        let packageObject = grpc.loadPackageDefinition(packageDefinition);
+        let service = packageObject.commandable.Commandable.service;     
+
+        this.registerService(
+            service, 
+            { 
+                invoke: (call, callback) => { 
+                    this.invokeCommandableMethod(call, callback); 
+                } 
+            }
+        );
+    }
+
+    private invokeCommandableMethod(call: any, callback: (err: any, result: any) => void): void {
+        let method = call.request.method;
+        let action = this._commandableMethods ? this._commandableMethods[method] : null;
+        let correlationId = call.request.correlation_id;
+
+        // Handle method not found
+        if (action == null) {
+            let err = new InvocationException(correlationId, "METHOD_NOT_FOUND", "Method " + method + " was not found")
+                .withDetails("method", method);
+            
+            let response = { 
+                error: ErrorDescriptionFactory.create(err),
+                result_empty: true,
+                result_json: null 
+            };
+
+            callback(null, response);
+            return;
+        }
+
+        try {
+            // Convert arguments
+            let argsEmpty = call.request.args_empty;
+            let argsJson = call.request.args_json;
+            let args = !argsEmpty && argsJson ? Parameters.fromJson(argsJson) : new Parameters();
+
+            // Todo: Validate schema
+            let schema = this._commandableSchemas[method];
+            if (schema) {
+                //...
+            }
+
+            // Call command action
+            action(correlationId, args, (err, result) => {
+                // Process result and generate response
+                let response: any;
+                if (err) {
+                    response = {
+                        error: ErrorDescriptionFactory.create(err),
+                        result_empty: true,
+                        result_json: null
+                    };
+                } else {
+                    response = {
+                        error: null,
+                        result_empty: result == null,
+                        result_json: result != null ? JSON.stringify(result): null 
+                    };
+                }
+
+                callback(err, response);
+            });
+        } catch (ex) {
+            // Handle unexpected exception
+            let err = new InvocationException(correlationId, "METHOD_FAILED", "Method " + method + " failed")
+                .wrap(ex).withDetails("method", method);
+        
+            let response = { 
+                error: ErrorDescriptionFactory.create(err),
+                result_empty: true,
+                result_json: null 
+            };
+
+            callback(null, response);
+        }
+    }
 
     /**
      * Registers a service with related implementation
@@ -312,6 +415,23 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
      */
     public registerService(service: any, implementation: any): void {
         this._server.addService(service, implementation);
+    }
+
+    /**
+     * Registers a commandable method in this objects GRPC server (service) by the given name.,
+     * 
+     * @param method        the GRPC method name.
+     * @param schema        the schema to use for parameter validation.
+     * @param action        the action to perform at the given route.
+     */
+    public registerCommadableMethod(method: string, schema: Schema,
+        action: (correlationId: string, args: Parameters, callback: (err: any, result: any) => void) => void): void {
+
+        this._commandableMethods = this._commandableMethods || {};
+        this._commandableMethods[method] = action;
+
+        this._commandableSchemas = this._commandableSchemas || {};
+        this._commandableSchemas[method] = schema;
     }
 
     // /**

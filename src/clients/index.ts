@@ -4,4 +4,4 @@
  * 
  */
 export { GrpcClient } from './GrpcClient';
-// export { CommandableGrpcClient } from './CommandableGrpcClient';
+export { CommandableGrpcClient } from './CommandableGrpcClient';
