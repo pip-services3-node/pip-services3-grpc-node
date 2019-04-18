@@ -1,5 +1,7 @@
 /.vscode
 /src
+!/src/protos
+!/src/protos/*
 /test
 /obj/test
 /data
