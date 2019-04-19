@@ -1,6 +1,6 @@
 {
-    "name": "pip-services-rpc",
+    "name": "pip-services3-grpc-node",
     "registry": "pipdevs",
-    "version": "3.1.10",
-    "build": "0"
+    "version": "3.0.1",
+    "build": 0
 }
