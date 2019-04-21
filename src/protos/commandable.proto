@@ -25,7 +25,7 @@ message ErrorDescription {
   string category = 1;
   string code = 2;
   string correlation_id = 3;
-  string status = 4;
+  int32 status = 4;
   string message = 5;
   string cause = 6;
   string stack_trace = 7;

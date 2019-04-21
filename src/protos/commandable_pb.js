@@ -106,11 +106,11 @@ proto.commandable.ErrorDescription.prototype.toObject = function(opt_includeInst
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.commandable.ErrorDescription.toObject = function(includeInstance, msg) {
-  var obj = {
+  var f, obj = {
     category: jspb.Message.getFieldWithDefault(msg, 1, ""),
     code: jspb.Message.getFieldWithDefault(msg, 2, ""),
     correlationId: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    status: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    status: jspb.Message.getFieldWithDefault(msg, 4, 0),
     message: jspb.Message.getFieldWithDefault(msg, 5, ""),
     cause: jspb.Message.getFieldWithDefault(msg, 6, ""),
     stackTrace: jspb.Message.getFieldWithDefault(msg, 7, ""),
@@ -164,7 +164,7 @@ proto.commandable.ErrorDescription.deserializeBinaryFromReader = function(msg, r
       msg.setCorrelationId(value);
       break;
     case 4:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {number} */ (reader.readInt32());
       msg.setStatus(value);
       break;
     case 5:
@@ -236,8 +236,8 @@ proto.commandable.ErrorDescription.serializeBinaryToWriter = function(message, w
     );
   }
   f = message.getStatus();
-  if (f.length > 0) {
-    writer.writeString(
+  if (f !== 0) {
+    writer.writeInt32(
       4,
       f
     );
@@ -316,17 +316,17 @@ proto.commandable.ErrorDescription.prototype.setCorrelationId = function(value) 
 
 
 /**
- * optional string status = 4;
- * @return {string}
+ * optional int32 status = 4;
+ * @return {number}
  */
 proto.commandable.ErrorDescription.prototype.getStatus = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
 };
 
 
-/** @param {string} value */
+/** @param {number} value */
 proto.commandable.ErrorDescription.prototype.setStatus = function(value) {
-  jspb.Message.setProto3StringField(this, 4, value);
+  jspb.Message.setProto3IntField(this, 4, value);
 };
 
 
@@ -425,7 +425,7 @@ proto.commandable.InvokeRequest.prototype.toObject = function(opt_includeInstanc
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.commandable.InvokeRequest.toObject = function(includeInstance, msg) {
-  var obj = {
+  var f, obj = {
     method: jspb.Message.getFieldWithDefault(msg, 1, ""),
     correlationId: jspb.Message.getFieldWithDefault(msg, 2, ""),
     argsEmpty: jspb.Message.getFieldWithDefault(msg, 3, false),
@@ -633,7 +633,7 @@ proto.commandable.InvokeReply.prototype.toObject = function(opt_includeInstance)
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.commandable.InvokeReply.toObject = function(includeInstance, msg) {
-  var obj = {
+  var f, obj = {
     error: (f = msg.getError()) && proto.commandable.ErrorDescription.toObject(includeInstance, f),
     resultEmpty: jspb.Message.getFieldWithDefault(msg, 2, false),
     resultJson: jspb.Message.getFieldWithDefault(msg, 3, "")
