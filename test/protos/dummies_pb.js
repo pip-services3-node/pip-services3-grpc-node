@@ -194,7 +194,7 @@ proto.dummies.ErrorDescription.prototype.toObject = function(opt_includeInstance
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.dummies.ErrorDescription.toObject = function(includeInstance, msg) {
-  var obj = {
+  var f, obj = {
     category: jspb.Message.getFieldWithDefault(msg, 1, ""),
     code: jspb.Message.getFieldWithDefault(msg, 2, ""),
     correlationId: jspb.Message.getFieldWithDefault(msg, 3, ""),
@@ -513,7 +513,7 @@ proto.dummies.PagingParams.prototype.toObject = function(opt_includeInstance) {
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.dummies.PagingParams.toObject = function(includeInstance, msg) {
-  var obj = {
+  var f, obj = {
     skip: jspb.Message.getFieldWithDefault(msg, 1, 0),
     take: jspb.Message.getFieldWithDefault(msg, 2, 0),
     total: jspb.Message.getFieldWithDefault(msg, 3, false)
@@ -694,7 +694,7 @@ proto.dummies.Dummy.prototype.toObject = function(opt_includeInstance) {
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.dummies.Dummy.toObject = function(includeInstance, msg) {
-  var obj = {
+  var f, obj = {
     id: jspb.Message.getFieldWithDefault(msg, 1, ""),
     key: jspb.Message.getFieldWithDefault(msg, 2, ""),
     content: jspb.Message.getFieldWithDefault(msg, 3, "")
@@ -880,7 +880,7 @@ proto.dummies.DummiesPage.prototype.toObject = function(opt_includeInstance) {
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.dummies.DummiesPage.toObject = function(includeInstance, msg) {
-  var obj = {
+  var f, obj = {
     total: jspb.Message.getFieldWithDefault(msg, 1, 0),
     dataList: jspb.Message.toObjectList(msg.getDataList(),
     proto.dummies.Dummy.toObject, includeInstance)
@@ -1054,7 +1054,7 @@ proto.dummies.DummiesPageRequest.prototype.toObject = function(opt_includeInstan
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.dummies.DummiesPageRequest.toObject = function(includeInstance, msg) {
-  var obj = {
+  var f, obj = {
     correlationId: jspb.Message.getFieldWithDefault(msg, 1, ""),
     filterMap: (f = msg.getFilterMap()) ? f.toObject(includeInstance, undefined) : [],
     paging: (f = msg.getPaging()) && proto.dummies.PagingParams.toObject(includeInstance, f)
@@ -1258,7 +1258,7 @@ proto.dummies.DummyIdRequest.prototype.toObject = function(opt_includeInstance) 
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.dummies.DummyIdRequest.toObject = function(includeInstance, msg) {
-  var obj = {
+  var f, obj = {
     correlationId: jspb.Message.getFieldWithDefault(msg, 1, ""),
     dummyId: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
@@ -1410,7 +1410,7 @@ proto.dummies.DummyObjectRequest.prototype.toObject = function(opt_includeInstan
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
 proto.dummies.DummyObjectRequest.toObject = function(includeInstance, msg) {
-  var obj = {
+  var f, obj = {
     correlationId: jspb.Message.getFieldWithDefault(msg, 1, ""),
     dummy: (f = msg.getDummy()) && proto.dummies.Dummy.toObject(includeInstance, f)
   };
