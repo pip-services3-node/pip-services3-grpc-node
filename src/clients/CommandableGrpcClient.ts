@@ -104,6 +104,7 @@ export class CommandableGrpcClient extends GrpcClient {
 
                 // Handle unexpected error
                 if (err) {
+                    this.instrumentError(correlationId, method, err);
                     if (callback) callback(err, null);
                     return;
                 }

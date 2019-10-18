@@ -82,7 +82,7 @@ class CommandableGrpcService extends GrpcService_1.GrpcService {
                 let timing = this.instrument(correlationId, method);
                 command.execute(correlationId, args, (err, result) => {
                     timing.endTiming();
-                    callback(err, result);
+                    this.instrumentError(correlationId, method, err, result, callback);
                 });
             });
         }

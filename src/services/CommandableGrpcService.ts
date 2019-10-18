@@ -93,7 +93,7 @@ export abstract class CommandableGrpcService extends GrpcService {
 
                 command.execute(correlationId, args, (err, result) => {
                     timing.endTiming();
-                    callback(err, result);
+                    this.instrumentError(correlationId, method, err, result, callback);
                 })
             });
         }

@@ -92,6 +92,7 @@ class CommandableGrpcClient extends GrpcClient_1.GrpcClient {
             timing.endTiming();
             // Handle unexpected error
             if (err) {
+                this.instrumentError(correlationId, method, err);
                 if (callback)
                     callback(err, null);
                 return;

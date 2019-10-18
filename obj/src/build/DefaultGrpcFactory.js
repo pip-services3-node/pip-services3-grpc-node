@@ -27,7 +27,7 @@ class DefaultGrpcFactory extends pip_services3_components_node_1.Factory {
         // this.registerAsType(DefaultRpcFactory.StatusServiceDescriptor, StatusGrpcService);
     }
 }
+exports.DefaultGrpcFactory = DefaultGrpcFactory;
 DefaultGrpcFactory.Descriptor = new pip_services3_commons_node_1.Descriptor("pip-services", "factory", "grpc", "default", "1.0");
 DefaultGrpcFactory.GrpcEndpointDescriptor = new pip_services3_commons_node_1.Descriptor("pip-services", "endpoint", "grpc", "*", "1.0");
-exports.DefaultGrpcFactory = DefaultGrpcFactory;
 //# sourceMappingURL=DefaultGrpcFactory.js.map

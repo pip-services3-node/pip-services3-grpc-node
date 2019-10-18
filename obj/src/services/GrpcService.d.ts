@@ -138,6 +138,16 @@ export declare abstract class GrpcService implements IOpenable, IConfigurable, I
      */
     protected instrument(correlationId: string, name: string): Timing;
     /**
+     * Adds instrumentation to error handling.
+     *
+     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param name              a method name.
+     * @param err               an occured error
+     * @param result            (optional) an execution result
+     * @param callback          (optional) an execution callback
+     */
+    protected instrumentError(correlationId: string, name: string, err: any, result?: any, callback?: (err: any, result: any) => void): void;
+    /**
      * Checks if the component is opened.
      *
      * @returns true if the component has been opened and false otherwise.

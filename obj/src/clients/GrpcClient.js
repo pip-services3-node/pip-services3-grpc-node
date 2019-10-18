@@ -128,7 +128,25 @@ class GrpcClient {
      */
     instrument(correlationId, name) {
         this._logger.trace(correlationId, "Executing %s method", name);
+        this._counters.incrementOne(name + ".call_count");
         return this._counters.beginTiming(name + ".call_time");
+    }
+    /**
+     * Adds instrumentation to error handling.
+     *
+     * @param correlationId     (optional) transaction id to trace execution through call chain.
+     * @param name              a method name.
+     * @param err               an occured error
+     * @param result            (optional) an execution result
+     * @param callback          (optional) an execution callback
+     */
+    instrumentError(correlationId, name, err, result = null, callback = null) {
+        if (err != null) {
+            this._logger.error(correlationId, err, "Failed to call %s method", name);
+            this._counters.incrementOne(name + '.call_errors');
+        }
+        if (callback)
+            callback(err, result);
     }
     /**
      * Checks if the component is opened.
@@ -273,6 +291,6 @@ class GrpcClient {
         });
     }
 }
-GrpcClient._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples("connection.protocol", "http", "connection.host", "0.0.0.0", "connection.port", 3000, "options.request_max_size", 1024 * 1024, "options.connect_timeout", 10000, "options.timeout", 10000, "options.retries", 3, "options.debug", true);
 exports.GrpcClient = GrpcClient;
+GrpcClient._defaultConfig = pip_services3_commons_node_1.ConfigParams.fromTuples("connection.protocol", "http", "connection.host", "0.0.0.0", "connection.port", 3000, "options.request_max_size", 1024 * 1024, "options.connect_timeout", 10000, "options.timeout", 10000, "options.retries", 3, "options.debug", true);
 //# sourceMappingURL=GrpcClient.js.map
