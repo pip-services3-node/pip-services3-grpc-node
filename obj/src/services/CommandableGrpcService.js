@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CommandableGrpcService = void 0;
 const GrpcService_1 = require("./GrpcService");
 /**
  * Abstract service that receives commands via GRPC protocol

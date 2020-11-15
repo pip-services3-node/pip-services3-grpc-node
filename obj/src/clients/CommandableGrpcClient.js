@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.CommandableGrpcClient = void 0;
 /** @module clients */
 const GrpcClient_1 = require("./GrpcClient");
 const pip_services3_commons_node_1 = require("pip-services3-commons-node");

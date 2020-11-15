@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.GrpcService = void 0;
 /** @module services */
 /** @hidden */
 const _ = require('lodash');
