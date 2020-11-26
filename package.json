@@ -36,24 +36,28 @@
         "protogen": "cd src/protos && protoc --js_out=import_style=commonjs,binary:./ --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` commandable.proto",
         "protogen2": "cd test/protos && protoc --js_out=import_style=commonjs,binary:./ --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` dummies.proto",
         "protogen3": "cd test/protos && protoc --plugin=protoc-gen-ts=../../node_modules/.bin/protoc-gen-ts --js_out=import_style=commonjs,binary:./ --ts_out=. --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` dummies.proto",
-        "docgen": "typedoc --out doc/api src --mode modules --excludeExternals --excludePrivate --target ES6 --ignoreCompilerErrors"
+        "docgen": "typedoc --out docs src --mode modules --excludeExternals --excludePrivate --target ES6 --ignoreCompilerErrors",
+        "docgen2": "typedoc --out docs src --mode file --excludeExternals --target ES6 --ignoreCompilerErrors --readme docs/ApiReference.md"
     },
     "dependencies": {
         "@grpc/proto-loader": "^0.4.0",
         "google-protobuf": "^3.7.1",
         "grpc": "^1.19.0",
+        "handlebars": "4.0.12",
+        "highlight.js": "9.12.0",
+        "js-yaml": "3.12.0",
         "pip-services3-commons-node": "^3.0.4",
         "pip-services3-components-node": "^3.0.6",
         "pip-services3-rpc-node": "^3.1.10"
     },
     "devDependencies": {
-        "@types/node": "*",
-        "@types/lodash": "^4.0.0",
         "@types/async": "^2.0.0",
-        "@types/mocha": "*",
         "@types/chai": "*",
-        "mocha": "^2.2.0",
+        "@types/lodash": "^4.0.0",
+        "@types/mocha": "*",
+        "@types/node": "*",
         "chai": "^3.5.0",
+        "mocha": "^2.5.3",
         "ts-protoc-gen": "^0.9.0",
         "typedoc": "^0.11.1",
         "typedoc-plugin-external-module-name": "git+https://github.com/hobbyguy77/typedoc-plugin-external-module-name.git"
