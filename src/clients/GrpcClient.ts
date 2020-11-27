@@ -42,7 +42,7 @@ import { HttpConnectionResolver } from 'pip-services3-rpc-node';
  * - <code>\*:discovery:\*:\*:1.0</code>        (optional) [[https://pip-services3-node.github.io/pip-services3-components-node/interfaces/connect.idiscovery.html IDiscovery]] services to resolve connection
  * 
  * @see [[GrpcService]]
- * @see [[CommandableHttpService]]
+ * @see [[CommandableGrpcService]]
  * 
  * ### Example ###
  * 
