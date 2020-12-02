@@ -10,3 +10,4 @@
 /.dockerignore
 /*.sh
 /*.ps1
+/.github
