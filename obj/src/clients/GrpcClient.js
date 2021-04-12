@@ -121,11 +121,11 @@ class GrpcClient {
     }
     /**
      * Adds instrumentation to log calls and measure call time.
-     * It returns a Timing object that is used to end the time measurement.
+     * It returns a CounterTiming object that is used to end the time measurement.
      *
      * @param correlationId     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
-     * @returns Timing object to end the time measurement.
+     * @returns CounterTiming object to end the time measurement.
      */
     instrument(correlationId, name) {
         this._logger.trace(correlationId, "Executing %s method", name);
@@ -178,7 +178,7 @@ class GrpcClient {
             this._uri = connection.getUri();
             try {
                 let options = {};
-                if (connection.getProtocol('http') == 'https') {
+                if (connection.getProtocolWithDefault('http') == 'https') {
                     let sslKeyFile = credential.getAsNullableString('ssl_key_file');
                     let privateKey = fs.readFileSync(sslKeyFile).toString();
                     let sslCrtFile = credential.getAsNullableString('ssl_crt_file');
@@ -205,7 +205,7 @@ class GrpcClient {
                 }
                 // Create instance of express application   
                 let grpc = require('grpc');
-                let credentials = connection.getProtocol('http') == 'https'
+                let credentials = connection.getProtocolWithDefault('http') == 'https'
                     ? grpc.credentials.createSsl(options.ca, options.key, options.cert)
                     : grpc.credentials.createInsecure();
                 let clientType = this._clientType;

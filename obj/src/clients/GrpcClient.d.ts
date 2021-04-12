@@ -5,7 +5,7 @@ import { IReferences } from 'pip-services3-commons-node';
 import { ConfigParams } from 'pip-services3-commons-node';
 import { CompositeLogger } from 'pip-services3-components-node';
 import { CompositeCounters } from 'pip-services3-components-node';
-import { Timing } from 'pip-services3-components-node';
+import { CounterTiming } from 'pip-services3-components-node';
 import { HttpConnectionResolver } from 'pip-services3-rpc-node';
 /**
  * Abstract client that calls remove endpoints using GRPC protocol.
@@ -113,13 +113,13 @@ export declare abstract class GrpcClient implements IOpenable, IConfigurable, IR
     setReferences(references: IReferences): void;
     /**
      * Adds instrumentation to log calls and measure call time.
-     * It returns a Timing object that is used to end the time measurement.
+     * It returns a CounterTiming object that is used to end the time measurement.
      *
      * @param correlationId     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
-     * @returns Timing object to end the time measurement.
+     * @returns CounterTiming object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): Timing;
+    protected instrument(correlationId: string, name: string): CounterTiming;
     /**
      * Adds instrumentation to error handling.
      *

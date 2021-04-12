@@ -393,7 +393,7 @@ service.open(<span class="hljs-string">"123"</span>, (err) =&gt; {
 					<a name="instrument" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> instrument</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">instrument<span class="tsd-signature-symbol">(</span>correlationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Timing</span></li>
+						<li class="tsd-signature tsd-kind-icon">instrument<span class="tsd-signature-symbol">(</span>correlationId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">CounterTiming</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -406,7 +406,7 @@ service.open(<span class="hljs-string">"123"</span>, (err) =&gt; {
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Adds instrumentation to log calls and measure call time.
-									It returns a Timing object that is used to end the time measurement.</p>
+									It returns a CounterTiming object that is used to end the time measurement.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -424,8 +424,8 @@ service.open(<span class="hljs-string">"123"</span>, (err) =&gt; {
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Timing</span></h4>
-							<p>Timing object to end the time measurement.</p>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">CounterTiming</span></h4>
+							<p>CounterTiming object to end the time measurement.</p>
 						</li>
 					</ul>
 				</section>

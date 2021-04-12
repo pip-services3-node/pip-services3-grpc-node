@@ -7,7 +7,7 @@ import { ConfigParams } from 'pip-services3-commons-node';
 import { DependencyResolver } from 'pip-services3-commons-node';
 import { CompositeLogger } from 'pip-services3-components-node';
 import { CompositeCounters } from 'pip-services3-components-node';
-import { Timing } from 'pip-services3-components-node';
+import { CounterTiming } from 'pip-services3-components-node';
 import { Schema } from 'pip-services3-commons-node';
 import { GrpcEndpoint } from './GrpcEndpoint';
 import { IRegisterable } from './IRegisterable';
@@ -130,13 +130,13 @@ export declare abstract class GrpcService implements IOpenable, IConfigurable, I
     private createEndpoint;
     /**
      * Adds instrumentation to log calls and measure call time.
-     * It returns a Timing object that is used to end the time measurement.
+     * It returns a CounterTiming object that is used to end the time measurement.
      *
      * @param correlationId     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
-     * @returns Timing object to end the time measurement.
+     * @returns CounterTiming object to end the time measurement.
      */
-    protected instrument(correlationId: string, name: string): Timing;
+    protected instrument(correlationId: string, name: string): CounterTiming;
     /**
      * Adds instrumentation to error handling.
      *

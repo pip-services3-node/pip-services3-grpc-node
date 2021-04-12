@@ -13,7 +13,7 @@ import { IReferences } from 'pip-services3-commons-node';
 import { ConfigParams } from 'pip-services3-commons-node';
 import { CompositeLogger } from 'pip-services3-components-node';
 import { CompositeCounters } from 'pip-services3-components-node';
-import { Timing } from 'pip-services3-components-node';
+import { CounterTiming } from 'pip-services3-components-node';
 import { ApplicationExceptionFactory } from 'pip-services3-commons-node';
 import { ConnectionException } from 'pip-services3-commons-node';
 import { UnknownException } from 'pip-services3-commons-node';
@@ -158,13 +158,13 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
 
     /**
      * Adds instrumentation to log calls and measure call time.
-     * It returns a Timing object that is used to end the time measurement.
+     * It returns a CounterTiming object that is used to end the time measurement.
      * 
      * @param correlationId     (optional) transaction id to trace execution through call chain.
      * @param name              a method name.
-     * @returns Timing object to end the time measurement.
+     * @returns CounterTiming object to end the time measurement.
      */
-	protected instrument(correlationId: string, name: string): Timing {
+	protected instrument(correlationId: string, name: string): CounterTiming {
         this._logger.trace(correlationId, "Executing %s method", name);
         this._counters.incrementOne(name + ".call_count");
 		return this._counters.beginTiming(name + ".call_time");
@@ -221,7 +221,7 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
             try {
                 let options: any = {};
 
-                if (connection.getProtocol('http') == 'https') {
+                if (connection.getProtocolWithDefault('http') == 'https') {
                     let sslKeyFile = credential.getAsNullableString('ssl_key_file');
                     let privateKey = fs.readFileSync(sslKeyFile).toString();
         
@@ -253,7 +253,7 @@ export abstract class GrpcClient implements IOpenable, IConfigurable, IReference
                 // Create instance of express application   
                 let grpc = require('grpc'); 
                 
-                let credentials = connection.getProtocol('http') == 'https' 
+                let credentials = connection.getProtocolWithDefault('http') == 'https' 
                     ? grpc.credentials.createSsl(options.ca, options.key, options.cert)
                     : grpc.credentials.createInsecure();
 

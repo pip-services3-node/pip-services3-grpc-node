@@ -1,6 +1,6 @@
 {
     "name": "pip-services3-grpc-node",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "author": "Conceptual Vision Consulting LLC",
     "description": "GRPC calls for Pip.Services in Node.js",
     "contributors": [
@@ -39,22 +39,22 @@
     },
     "dependencies": {
         "@grpc/proto-loader": "^0.4.0",
-        "grpc-tools": "^1.10.0",
         "grpc": "^1.19.0",
+        "grpc-tools": "^1.10.0",
         "pip-services3-commons-node": "^3.0.4",
-        "pip-services3-components-node": "^3.0.6",
+        "pip-services3-components-node": "^3.2.3",
         "pip-services3-rpc-node": "^3.1.10"
     },
     "devDependencies": {
-        "@types/node": "*",
-        "@types/lodash": "^4.0.0",
         "@types/async": "^2.0.0",
-        "@types/mocha": "*",
         "@types/chai": "*",
-        "mocha": "^2.2.0",
+        "@types/lodash": "^4.0.0",
+        "@types/mocha": "*",
+        "@types/node": "*",
         "chai": "^3.5.0",
-        "ts-protoc-gen": "^0.9.0",
+        "google-protobuf": "^3.7.1",
         "grpc_tools_node_protoc_ts": "^5.0.1",
-        "google-protobuf": "^3.7.1"
+        "mocha": "^2.2.0",
+        "ts-protoc-gen": "^0.9.0"
     }
 }

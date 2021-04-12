@@ -205,7 +205,7 @@ class GrpcEndpoint {
             this._uri = connection.getUri();
             try {
                 let options = {};
-                if (connection.getProtocol('http') == 'https') {
+                if (connection.getProtocolWithDefault('http') == 'https') {
                     let sslKeyFile = credential.getAsNullableString('ssl_key_file');
                     let privateKey = fs.readFileSync(sslKeyFile).toString();
                     let sslCrtFile = credential.getAsNullableString('ssl_crt_file');
@@ -231,7 +231,7 @@ class GrpcEndpoint {
                 // Create instance of express application   
                 let grpc = require('grpc');
                 this._server = new grpc.Server();
-                let credentials = connection.getProtocol('http') == 'https'
+                let credentials = connection.getProtocolWithDefault('http') == 'https'
                     ? grpc.ServerCredentials.createSsl(options.ca, options.kvpair)
                     : grpc.ServerCredentials.createInsecure();
                 this._server.bindAsync(connection.getHost() + ":" + connection.getPort(), credentials, (err) => {

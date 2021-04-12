@@ -174,7 +174,7 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
             try {
                 let options: any = {};
 
-                if (connection.getProtocol('http') == 'https') {
+                if (connection.getProtocolWithDefault('http') == 'https') {
                     let sslKeyFile = credential.getAsNullableString('ssl_key_file');
                     let privateKey = fs.readFileSync(sslKeyFile).toString();
         
@@ -205,7 +205,7 @@ export class GrpcEndpoint implements IOpenable, IConfigurable, IReferenceable {
                 let grpc = require('grpc'); 
                 this._server = new grpc.Server();
                 
-                let credentials = connection.getProtocol('http') == 'https' 
+                let credentials = connection.getProtocolWithDefault('http') == 'https' 
                     ? grpc.ServerCredentials.createSsl(options.ca, options.kvpair)
                     : grpc.ServerCredentials.createInsecure();
 
